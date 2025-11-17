@@ -1,10 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import React, { useState } from "react";
 import Image from "next/image";
-import { useState } from "react";
-
-import { Clock, Play, Pause, Heart } from "lucide-react";
+import { RotateCcw, Play, Pause, Heart } from "lucide-react";
 import Pagination from "@/components/pagination";
 
 interface Item {
@@ -46,111 +44,88 @@ export default function RecentlyPlayed({
   const paginatedItems = items.slice(startIndex, startIndex + itemsPerPage);
 
   const handlePlay = (item: Item) => {
-    if (onPlay) onPlay(item);
+    onPlay?.(item);
   };
 
   const handleLike = (item: Item) => {
     setFavoriteIds((prev) =>
-      prev.includes(item.id)
-        ? prev.filter((id) => id !== item.id)
-        : [...prev, item.id]
+      prev.includes(item.id) ? prev.filter((id) => id !== item.id) : [...prev, item.id]
     );
-    if (onLike) onLike(item);
+    onLike?.(item);
   };
 
   return (
     <section className={className}>
       {/* Header */}
-      <div
-        className={
-          displayMode === "simple"
-            ? "flex items-center justify-between"
-            : "flex items-center gap-2 mb-6"
-        }
-      >
+      <div className={`flex items-center justify-between mb-4 mt-4`}>
         {displayMode === "simple" ? (
-          <>
+         <>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-semibold">Recently listened to</h2>
-              </div>
+              <h2 className="text-lg font-semibold">Recently listened to</h2>
               <span className="block w-16 h-[2px] bg-yellow-500 mt-2 relative">
-                <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rounded-full shadow border-black-500" />
+                <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rounded-full shadow" />
               </span>
             </div>
-            <Link
-              href="/?tab=recently"
-              className="text-sm text-yellow-500 hover:underline"
-            >
-              See all
-            </Link>
+            <button className="text-sm text-yellow-500 hover:underline">See all</button>
           </>
         ) : (
-          <>
-            <Clock className="w-5 h-5 text-white" />
-            <h1 className="text-xl font-semibold">Recently played</h1>
-          </>
+          <div className="flex items-center gap-2">
+            <RotateCcw className="w-5 h-5 text-white" />
+            <h1 className="text-xl font-semibold text-white">Recently played</h1>
+          </div>
         )}
       </div>
 
       {/* Items */}
       {paginatedItems.length > 0 ? (
-        <div className="rounded-lg mt-3">
+        <div className="rounded-lg mt-2 overflow-hidden">
           {paginatedItems.map((item, index) => {
-            // ✅ Use parent state to determine play
-            const playing =
-              currentRadio?.id === item.id && isPlaying ? true : false;
+            const playing = currentRadio?.id === item.id && isPlaying;
             const isFavorite = favoriteIds.includes(item.id);
 
             return (
               <div
                 key={item.id}
-                className={`grid grid-cols-[64px_1fr_1fr_1fr_72px] items-center px-3 py-3 text-sm border-b border-[#d9dce8] hover:bg-[#141922] ${
-                  index === paginatedItems.length - 1 ? "border-b-0" : ""
-                }`}
+                className="grid grid-cols-[auto_1fr_1fr_1fr_auto_auto] items-center gap-4 px-4 py-3 text-sm border-b-2 border-white hover:bg-[#141922] last:border-b-0"
               >
-                {item.image ? (
-                  <Image
-                    src={
-                      item.image.startsWith("http")
-                        ? item.image
-                        : `/${item.image.replace(/^\//, "")}`
-                    }
-                    alt={item.station}
-                    className="w-12 h-8 rounded-md object-cover"
-                    width={48}
-                    height={32}
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = defaultImage;
-                    }}
-                  />
-                ) : (
-                  <div className="w-12 h-8 bg-gray-700 rounded-md" />
-                )}
-                <div className="text-gray-200">{item.station}</div>
-                <div className="text-gray-400">{item.program}</div>
-                <div className="text-gray-400">
-                  Last listened at: {item.last}
+                <div className="flex items-center">
+                  {item.image ? (
+                    <Image
+                      src={item.image.startsWith("http") ? item.image : `/${item.image.replace(/^\//, "")}`}
+                      alt={item.station}
+                      className="w-12 h-8 rounded-md object-cover"
+                      width={48}
+                      height={32}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = defaultImage;
+                      }}
+                    />
+                  ) : (
+                    <div className="w-12 h-8 bg-gray-700 rounded-md" />
+                  )}
                 </div>
-                <div className="flex items-center gap-3 justify-end">
-                  {/* Play / Pause */}
-                  <button
-                    className={`text-gray-400 hover:text-white ${
-                      playing ? "text-yellow-400" : ""
-                    }`}
-                    onClick={() => handlePlay(item)}
-                  >
-                    {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                  </button>
 
-                  {/* Favorite */}
+                <div className="text-white truncate">{item.station}</div>
+                <div className="text-white truncate">{item.program}</div>
+                <div className="text-white">Last listened at: {item.last}</div>
+
+                <div className="flex justify-end">
                   <button
-                    className={`hover:text-red-500 ${
-                      isFavorite ? "text-red-500" : "text-gray-400"
-                    }`}
-                    onClick={() => handleLike(item)}
+                    onClick={() => handlePlay(item)}
+                    className="inline-flex items-center justify-center w-6 h-6 rounded-full border border-white text-white hover:border-white"
+                    aria-label={playing ? "Pause" : "Play"}
                   >
-                    <Heart className="w-4 h-4" fill={isFavorite ? "red" : "none"} />
+                    {playing ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                  </button>
+                </div>
+
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => handleLike(item)}
+                    className="text-white hover:text-white"
+                    aria-label="Like"
+                  >
+                    <Heart className="w-4 h-4" fill={isFavorite ? "white" : "none"} stroke="currentColor" />
                   </button>
                 </div>
               </div>
@@ -158,19 +133,19 @@ export default function RecentlyPlayed({
           })}
         </div>
       ) : (
-        <div className="text-gray-400 text-sm mt-3">
-          No recently played items available.
-        </div>
+        <div className="text-gray-400 text-sm mt-3">No recently played items available.</div>
       )}
 
       {/* Pagination */}
       {displayMode === "detailed" && showPagination && items.length > 0 && (
-        <Pagination
-          currentPage={currentPage}
-          totalItems={items.length}
-          itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
-        />
+        <div className="mt-4">
+          <Pagination
+            currentPage={currentPage}
+            totalItems={items.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       )}
     </section>
   );

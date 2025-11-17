@@ -10,7 +10,7 @@ const highlights = [
   {
     title: "Radio 10 — Urubuga rw’Imikino",
     description:
-      "Stay ahead of the game! Every Saturday from 10 AM to 1 PM, join Radio 10 for Urubuga rw’Imikino — your ultimate sports destination. From football to local updates, we’ve got the action, analysis, and excitement covered. Don’t just watch the game, live it with Radio 10!",
+      "Stay ahead of the game! Every Saturday from 10 AM to 1 PM, join Radio 10 for Urubuga rw'Imikino — your ultimate sports destination. From football to local updates, we’ve got the action, analysis, and excitement covered. Don’t just watch the game, live it with Radio 10!",
     image: "/images/radio-10.jpg",
   },
   {

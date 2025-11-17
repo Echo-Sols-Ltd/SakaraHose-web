@@ -25,7 +25,7 @@ export default function SettingsPage() {
   const [selectedLanguage, setSelectedLanguage] = useState("English(USA)");
 
   const handleEditProfile = () => {
-    router.push("/dashboard/settings/edit");
+    router.push("/setting/edit");
   };
 
   return (

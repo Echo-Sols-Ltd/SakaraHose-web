@@ -67,7 +67,7 @@ export default function Player({
         <div className="flex items-center gap-2 w-40">
           <Volume2 className="w-4 h-4 text-gray-300" />
           <div className="flex-1 h-1.5 bg-[#1b2130] rounded-full overflow-hidden">
-            <div className="h-full w-1/2 bg-yellow-500" />
+            <div className="h-full w-1/2 bg-white" />
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
-"use client";
+// "use client";
 
-import CategoriesPage from "@/components/home/CategoriesPage";
+// import CategoriesPage from "@/components/home/CategoriesPage";
 
-export default function CategoriesRoute() {
-  return <CategoriesPage />;
-}
+// export default function CategoriesRoute() {
+//   return <CategoriesPage />;
+// }
