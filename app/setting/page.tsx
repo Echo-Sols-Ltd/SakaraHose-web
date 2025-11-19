@@ -1,31 +1,22 @@
-// app/dashboard/settings/page.tsx
+// app/setting/page.tsx
 "use client";
 
 import { useState } from "react";
 import {
-  Settings,
-  User,
-  Lock,
-  Diamond,
-  History,
-  Languages,
-  HelpCircle,
-  FileText,
-  AlertTriangle,
-  LogOut,
-  ChevronRight,
-  Edit3,
+  Settings, Lock, Diamond, History, Languages,
+  HelpCircle, FileText, AlertTriangle, LogOut,
+  ChevronRight, Edit3, ArrowLeft
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
-  const router = useRouter();
-  const [selectedLanguage, setSelectedLanguage] = useState("English(USA)");
+  const [selectedLanguage] = useState("English (USA)");
 
-  const handleEditProfile = () => {
-    router.push("/setting/edit");
+  const goTo = (tab: string) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("tab", tab);
+    window.history.replaceState({}, "", `/?${params.toString()}`);
   };
 
   return (
@@ -40,100 +31,89 @@ export default function SettingsPage() {
       <section className="mb-8">
         <h2 className="text-lg font-medium mb-3">Account Settings</h2>
         <div className="bg-[#1a1d21] rounded-xl p-4 space-y-3">
-          {/* Profile Row */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between" onClick={() => goTo("settings_edit")}>
+            <div className="flex items-center gap-3 cursor-pointer">
               <Avatar className="w-12 h-12 ring-2 ring-white/20">
-                <AvatarImage src="/user.png" alt="Peace Ishimwe" />
-                <AvatarFallback className="bg-gray-700 text-lg">P</AvatarFallback>
+                <AvatarImage src="/user.png" />
+                <AvatarFallback>P</AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-medium text-white">Peace Ishimwe</p>
+                <p className="font-medium">Peace Ishimwe</p>
                 <p className="text-sm text-gray-400">peace@example.com</p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleEditProfile}
-              className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white flex items-center gap-1"
-            >
-              <Edit3 className="w-3.5 h-3.5" />
-              Edit Profile
+            <Button size="sm" className="gap-1">
+              <Edit3 className="w-3.5 h-3.5" /> Edit Profile
             </Button>
           </div>
 
-          {/* Change Password */}
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between py-2 cursor-pointer" onClick={() => goTo("change_password")}>
             <div className="flex items-center gap-3">
               <Lock className="w-5 h-5 text-gray-400" />
-              <span className="text-white">Change Password</span>
+              <span>Change Password</span>
             </div>
             <ChevronRight className="w-5 h-5 text-gray-400" />
           </div>
         </div>
       </section>
 
-      {/* Subscription & Premium */}
+      {/* Subscription */}
       <section className="mb-8">
         <h2 className="text-lg font-medium mb-3">Subscription & premium</h2>
         <div className="bg-[#1a1d21] rounded-xl p-4 space-y-3">
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between py-2 cursor-pointer" onClick={() => goTo("subscription")}>
             <div className="flex items-center gap-3">
               <Diamond className="w-5 h-5 text-gray-400" />
-              <span className="text-white">View current subscription status</span>
+              <span>View current subscription status</span>
             </div>
             <ChevronRight className="w-5 h-5 text-gray-400" />
           </div>
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between py-2 cursor-pointer" onClick={() => goTo("billing")}>
             <div className="flex items-center gap-3">
               <History className="w-5 h-5 text-gray-400" />
-              <span className="text-white">Billing history</span>
+              <span>Billing history</span>
             </div>
             <ChevronRight className="w-5 h-5 text-gray-400" />
           </div>
         </div>
       </section>
 
-      {/* App Preferences */}
+      {/* Preferences */}
       <section className="mb-8">
         <h2 className="text-lg font-medium mb-3">App preferences</h2>
         <div className="bg-[#1a1d21] rounded-xl p-4">
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between py-2 cursor-pointer" onClick={() => goTo("language")}>
             <div className="flex items-center gap-3">
               <Languages className="w-5 h-5 text-gray-400" />
-              <span className="text-white">Language selection</span>
+              <span>Language selection</span>
             </div>
-            <div className="flex items-center gap-1 text-gray-300">
-              <span className="text-sm">{selectedLanguage}</span>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
-            </div>
+            <div className="text-sm text-gray-300">{selectedLanguage} <ChevronRight className="w-5 h-5 inline text-gray-400" /></div>
           </div>
         </div>
       </section>
 
-      {/* Support & About */}
+      {/* Support */}
       <section className="mb-8">
         <h2 className="text-lg font-medium mb-3">Support & about</h2>
         <div className="bg-[#1a1d21] rounded-xl p-4 space-y-3">
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between py-2 cursor-pointer" onClick={() => goTo("support_contact")}>
             <div className="flex items-center gap-3">
               <HelpCircle className="w-5 h-5 text-gray-400" />
-              <span className="text-white">Contact support</span>
+              <span>Contact support</span>
             </div>
             <ChevronRight className="w-5 h-5 text-gray-400" />
           </div>
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between py-2 cursor-pointer" onClick={() => goTo("terms")}>
             <div className="flex items-center gap-3">
               <FileText className="w-5 h-5 text-gray-400" />
-              <span className="text-white">Terms of services</span>
+              <span>Terms of services</span>
             </div>
             <ChevronRight className="w-5 h-5 text-gray-400" />
           </div>
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between py-2 cursor-pointer" onClick={() => goTo("report")}>
             <div className="flex items-center gap-3">
               <AlertTriangle className="w-5 h-5 text-gray-400" />
-              <span className="text-white">Report a problem</span>
+              <span>Report a problem</span>
             </div>
             <ChevronRight className="w-5 h-5 text-gray-400" />
           </div>
@@ -142,12 +122,12 @@ export default function SettingsPage() {
 
       {/* Log Out */}
       <div className="bg-[#1a1d21] rounded-xl p-4">
-        <div className="flex items-center justify-between py-2">
+        <div className="flex items-center justify-between py-2 text-red-400 cursor-pointer" onClick={() => alert("Logged out!")}>
           <div className="flex items-center gap-3">
-            <LogOut className="w-5 h-5 text-gray-400" />
-            <span className="text-white">Log out</span>
+            <LogOut className="w-5 h-5" />
+            <span>Log out</span>
           </div>
-          <ChevronRight className="w-5 h-5 text-gray-400" />
+          <ChevronRight className="w-5 h-5" />
         </div>
       </div>
     </div>

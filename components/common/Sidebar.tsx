@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
@@ -19,9 +20,9 @@ type Tab = { id: string; icon: any; label: string };
 interface SidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
-  sidebarOpen?: boolean; // controls collapsed width on desktop
+  sidebarOpen?: boolean;
   toggleSidebar?: () => void;
-  isMobileSidebarOpen?: boolean; // when true we show full-screen mobile overlay
+  isMobileSidebarOpen?: boolean;
   setIsMobileSidebarOpen?: (open: boolean) => void;
 }
 
@@ -35,62 +36,77 @@ export default function Sidebar({
   isMobileSidebarOpen = false,
   setIsMobileSidebarOpen,
 }: SidebarProps) {
-  const tabs: Tab[] = [
+  const mainTabs: Tab[] = [
     { id: "home", icon: Home, label: "Home" },
     { id: "stations", icon: Radio, label: "All Stations" },
     { id: "categories", icon: Folder, label: "Categories" },
+  ];
+
+  const secondaryTabs: Tab[] = [
     { id: "recently", icon: Clock, label: "Recently played" },
     { id: "favorites", icon: Heart, label: "Favorites" },
     { id: "settings", icon: Settings, label: "Settings" },
   ];
 
+  const renderNavItem = (tab: Tab) => {
+    const Icon = tab.icon;
+    const isActive = activeTab === tab.id;
+
+    return (
+      <button
+        key={tab.id}
+        onClick={() => {
+          onTabChange(tab.id);
+          if (isMobileSidebarOpen && setIsMobileSidebarOpen) setIsMobileSidebarOpen(false);
+        }}
+        className={cn(
+          "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left text-base font-medium hover:bg-[#23263A] focus:outline-none w-full",
+          isActive ? "bg-[#23263A] text-[#FFD700]" : "text-white"
+        )}
+      >
+        <Icon className={cn("w-5 h-5", isActive ? "text-[#FFD700]" : "text-white")} />
+        <span className={cn(sidebarOpen ? "inline" : "hidden md:inline")}>
+          {tab.label}
+        </span>
+      </button>
+    );
+  };
+
   const renderNav = (
     <nav className="flex flex-col gap-1">
-      {tabs.map((tab) => {
-        const Icon = tab.icon;
-        const isActive = activeTab === tab.id;
-        return (
-          <button
-            key={tab.id}
-            onClick={() => {
-              onTabChange(tab.id);
-              if (isMobileSidebarOpen && setIsMobileSidebarOpen) setIsMobileSidebarOpen(false);
-            }}
-            className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left text-base font-medium hover:bg-[#23263A] focus:outline-none",
-              isActive ? "bg-[#23263A] text-[#FFD700]" : "text-white"
-            )}
-          >
-            <Icon className={cn("w-5 h-5", isActive ? "text-[#FFD700]" : "text-white")} />
-            <span className={cn(sidebarOpen ? "inline" : "hidden md:inline")}>{tab.label}</span>
-          </button>
-        );
-      })}
-      <div className="my-3 h-px bg-[#2B3044]" />
+      {/* Main Navigation - Top 3 */}
+      {mainTabs.map(renderNavItem)}
+
+      {/* Divider - Beautifully placed in the middle */}
+      <div className="my-6 h-px bg-white" />
+
+      {/* Secondary Navigation */}
+      {secondaryTabs.map(renderNavItem)}
     </nav>
   );
 
-  // Desktop aside (collapsed/expanded)
+  // Desktop Sidebar
   const desktopAside = (
     <aside
       className={cn(
-        "hidden md:flex flex-col bg-[#181C2B] p-6 min-h-screen shadow-lg border-r border-[#23263A] fixed left-0 top-0 z-20 transition-all",
+        "hidden md:flex flex-col bg-[#181C2B] p-6 min-h-screen shadow-lg border-r border-[#23263A] fixed left-0 top-0 z-20 transition-all duration-300",
         sidebarOpen ? "w-64" : "w-20"
       )}
     >
-      <div className="mb-6 flex items-center gap-2 px-2">
+      <div className="mb-8 flex items-center gap-2 px-2">
         <span className={cn(brandFont.className, "text-3xl leading-none text-white")}>
           <span className={sidebarOpen ? "" : "hidden"}>Sakara Hose</span>
-          <span className={!sidebarOpen ? "block mx-auto" : "hidden"}>SH</span>
+          <span className={!sidebarOpen ? "block mx-auto text-2xl" : "hidden"}>SH</span>
         </span>
       </div>
 
       {renderNav}
 
-      <div className="mt-auto pt-4">
+      {/* Logout at the bottom */}
+      <div className="mt-auto pt-8">
         <button
           onClick={() => onTabChange("logout")}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-base font-medium text-white hover:bg-[#23263A]"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-base font-medium text-white hover:bg-[#23263A] transition"
         >
           <LogOut className="w-5 h-5" />
           <span className={cn(sidebarOpen ? "inline" : "hidden md:inline")}>Log out</span>
@@ -99,7 +115,7 @@ export default function Sidebar({
     </aside>
   );
 
-  // Mobile overlay aside (full screen)
+  // Mobile Overlay
   const mobileOverlay = (
     <div className="md:hidden fixed inset-0 z-40">
       <div
@@ -121,7 +137,7 @@ export default function Sidebar({
 
         {renderNav}
 
-        <div className="mt-6">
+        <div className="mt-8">
           <button
             onClick={() => {
               onTabChange("logout");

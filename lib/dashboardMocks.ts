@@ -14,6 +14,7 @@ export interface Station {
 }
 
 export interface FavoriteStation extends Station {
+  [x: string]: string;
   favoriteDate: string;
 }
 
